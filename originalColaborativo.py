@@ -7,11 +7,7 @@ ratings_df=pd.read_csv("datos/ratings.csv")
 lista = {'Of Mice and Men': 5,
             'Pet Sematary': 4,
             '1984': 5,
-            'Fahrenheit 451': 4,
-            'Animal Farm': 5, 
-            "Misery": 4,
-            'Lord of the Flies': 4,
-            'The Great Gatsby': 4,
+            'Fahrenheit 451': 4
             }
 
 mi_lista = pd.DataFrame(columns=['title', 'rating'], data=lista.items())
@@ -60,13 +56,5 @@ recomendaciones = recomendaciones.reset_index(drop=True)
 
 recomendaciones = recomendaciones[(recomendaciones['puntaje_promedio_recomendacion'] == 5)]
 
-recomendados = libros_df[libros_df['book_id'].isin(recomendaciones['book_id'])][['book_id']].sample(5)
-print(recomendados)
-
-from sklearn.metrics.pairwise import cosine_similarity
-
-mar = np.array([[0,0,4,3,0]])
-seb = np.array([[1,1,5,4,0]])
-res = cosine_similarity(mar,seb)
-
-print(res)
+recomendados = libros_df[libros_df['book_id'].isin(recomendaciones['book_id'])][['book_id']]
+print(recomendados.shape[0])
