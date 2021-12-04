@@ -24,6 +24,8 @@ from typing import List
 
 import json
 
+from fastapi.middleware.cors import CORSMiddleware
+
 DATABASE_URL = "mysql+mysqlconnector://root123:root123@35.238.124.195:3306/baserecomendacion"
 
 engine = create_engine(DATABASE_URL, echo=False)
@@ -51,7 +53,12 @@ class ListaLibros(BaseModel):
     libros: list[Libro]
 
 app = FastAPI()
-
+origins = ['http://localhost:4200/']
+app.add_middleware(CORSMiddleware,
+                   allow_origins=origins,
+                   allow_credentials=True,
+                   allow_methods=[""],
+                   allow_headers=[""],)
 app.include_router(user)
 
 libros_df=pd.read_sql("SELECT * FROM books", DATABASE_URL)
