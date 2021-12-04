@@ -138,6 +138,14 @@ async def recomendacionColab(user_id: int):
     parsed = json.loads(data)
     return parsed    
 
+@app.get("/recomendadosCont/{title}")
+async def recomendacionCont(title: str):
+    libros = recomendacionContenido(title)
+    libro = libros.head(100)
+    data = libro.to_json(orient="records")
+    parsed = json.loads(data)
+    return parsed    
+
 @app.get("/todos")
 async def todos_libros():
     libros = libros_df
@@ -211,5 +219,8 @@ def recomendacionContenido(paramTitle):
         book_indices = [i[0] for i in sim_scores]
         return titles.iloc[book_indices]
 
-    return corpus_recommendations(paramTitle)
+    results = corpus_recommendations(paramTitle)
+    results =  pd.merge(results, libros_df, on='title', how='inner')
+
+    return results
 
