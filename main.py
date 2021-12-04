@@ -63,10 +63,15 @@ def getRatings(id):
     ratings = pd.read_sql(sql, DATABASE_URL)
     return ratings
 
-def recomendacionColaborativa(id):
+def getRatingsColab(id):
+    sql = "SELECT books.title, ratings.rating FROM users, ratings, books WHERE users.user_id = " +str(id)+ " and users.user_id = ratings.user_id and ratings.book_id = books.book_id"
+    lista = pd.read_sql(sql, DATABASE_URL)
+    return lista
 
-    ratings_df=pd.read_sql("SELECT books.title, ratings.rating FROM ratings, user, ratings where user.user_id = ratings.user_id, and ratings.book_id = books.book_id", DATABASE_URL)
-    lista = getRatings(id)
+def recomendacionColaborativa(id):
+    sql = "SELECT * from ratings"
+    ratings_df=pd.read_sql(sql, DATABASE_URL)
+    lista = getRatingsColab(id)
     mi_lista = lista
 
     lista_usuario = pd.merge(mi_lista, libros_df, on='title', how='inner')
@@ -111,7 +116,7 @@ def recomendacionColaborativa(id):
 
     recomendaciones = recomendaciones[(recomendaciones['puntaje_promedio_recomendacion'] == 5)]
 
-    recomendados = libros_df[libros_df['book_id'].isin(recomendaciones['book_id'])][['book_id']].head(100)
+    recomendados = libros_df[libros_df['book_id'].isin(recomendaciones['book_id'])][['book_id']].head(50)
 
     recomendados = pd.merge(recomendados, libros_df, on="book_id")
 
